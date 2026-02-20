@@ -1,194 +1,864 @@
 <!DOCTYPE html>
+
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>แบบประเมินพนักงาน</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>แบบประเมินพนักงาน - Service Staff</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-
 <style>
-body{
-    font-family: sans-serif;
-    background:#f4f4f4;
-    padding:40px;
+  :root {
+    --navy: #1a2744;
+    --gold: #c9a84c;
+    --light: #f5f3ee;
+    --border: #c5b99a;
+    --text: #2c2c2c;
+    --muted: #6b6b6b;
+    --white: #ffffff;
+    --pass-bg: #e8f4ec;
+    --fail-bg: #fdf0f0;
+  }
+
+- { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+font-family: ‘Sarabun’, sans-serif;
+background: #e8e5df;
+min-height: 100vh;
+color: var(–text);
 }
-.container{
-    background:white;
-    padding:30px;
-    max-width:1100px;
-    margin:auto;
-    box-shadow:0 0 15px rgba(0,0,0,0.1);
+
+/* Toolbar */
+.toolbar {
+position: fixed;
+top: 0; left: 0; right: 0;
+background: var(–navy);
+padding: 12px 24px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+z-index: 100;
+box-shadow: 0 2px 12px rgba(0,0,0,0.3);
 }
-h2{margin-bottom:20px;}
-.row{
-    display:flex;
-    gap:20px;
-    margin-bottom:15px;
+
+.toolbar-title {
+font-family: ‘Prompt’, sans-serif;
+color: var(–gold);
+font-size: 1rem;
+font-weight: 500;
+letter-spacing: 0.05em;
 }
-.row input{
-    padding:10px;
-    flex:1;
-    font-size:14px;   /* ✅ ปรับขนาดฟอนต์ */
+
+.toolbar-actions {
+display: flex;
+gap: 10px;
 }
-table{
-    width:100%;
-    border-collapse:collapse;
-    margin-top:20px;
+
+.btn {
+padding: 8px 20px;
+border: none;
+border-radius: 4px;
+font-family: ‘Sarabun’, sans-serif;
+font-size: 0.875rem;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.2s;
+display: flex;
+align-items: center;
+gap: 6px;
 }
-table, th, td{
-    border:1px solid #000;
+
+.btn-primary {
+background: var(–gold);
+color: var(–navy);
 }
-th, td{
-    padding:8px;
-    font-size:14px;
+.btn-primary:hover { background: #b8933d; }
+
+.btn-outline {
+background: transparent;
+color: var(–gold);
+border: 1.5px solid var(–gold);
 }
-th{
-    background:#eee;
-    text-align:center;
+.btn-outline:hover { background: rgba(201,168,76,0.15); }
+
+/* Page wrapper */
+.page-wrapper {
+padding: 80px 24px 40px;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 20px;
 }
-.center{text-align:center;}
-textarea{
-    width:100%;
-    font-size:14px;
+
+.form-instructions {
+max-width: 794px;
+width: 100%;
+background: var(–navy);
+color: var(–light);
+padding: 12px 20px;
+border-radius: 6px;
+font-size: 0.85rem;
+display: flex;
+align-items: center;
+gap: 8px;
 }
-button{
-    margin-top:20px;
-    padding:10px 20px;
-    background:black;
-    color:white;
-    border:none;
-    cursor:pointer;
+
+/* Document */
+#document {
+width: 794px;
+background: var(–white);
+padding: 40px 50px;
+box-shadow: 0 4px 30px rgba(0,0,0,0.15);
+border-top: 6px solid var(–navy);
 }
-button:hover{opacity:0.8;}
-.actions{
-    display:flex;
-    gap:10px;
+
+/* Header */
+.doc-header {
+margin-bottom: 20px;
+}
+
+.doc-title {
+text-align: center;
+font-family: ‘Prompt’, sans-serif;
+font-size: 1.2rem;
+font-weight: 600;
+color: var(–navy);
+border-bottom: 2px solid var(–gold);
+padding-bottom: 8px;
+margin-bottom: 16px;
+}
+
+/* Info row */
+.info-grid {
+display: grid;
+grid-template-columns: 1fr 1fr 1fr;
+gap: 10px;
+margin-bottom: 14px;
+}
+
+.info-field {
+display: flex;
+flex-direction: column;
+gap: 2px;
+}
+
+.info-label {
+font-size: 0.72rem;
+color: var(–muted);
+font-weight: 600;
+text-transform: uppercase;
+letter-spacing: 0.05em;
+}
+
+.info-input {
+border: none;
+border-bottom: 1.5px solid var(–border);
+padding: 4px 2px;
+font-family: ‘Sarabun’, sans-serif;
+font-size: 0.95rem;
+color: var(–text);
+background: transparent;
+width: 100%;
+outline: none;
+transition: border-color 0.2s;
+}
+
+.info-input:focus { border-color: var(–navy); }
+
+.period-field {
+grid-column: 1 / -1;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+.period-label {
+font-size: 0.85rem;
+color: var(–muted);
+white-space: nowrap;
+font-weight: 600;
+}
+
+/* Instruction */
+.instruction-box {
+background: #f0ede6;
+border-left: 4px solid var(–gold);
+padding: 10px 14px;
+font-size: 0.82rem;
+color: var(–muted);
+margin-bottom: 18px;
+border-radius: 0 4px 4px 0;
+line-height: 1.6;
+}
+
+.instruction-box strong { color: var(–navy); }
+
+/* Table */
+.eval-table {
+width: 100%;
+border-collapse: collapse;
+margin-bottom: 24px;
+font-size: 0.88rem;
+}
+
+.eval-table thead tr {
+background: var(–navy);
+color: var(–white);
+}
+
+.eval-table thead th {
+padding: 10px 12px;
+text-align: center;
+font-family: ‘Prompt’, sans-serif;
+font-weight: 500;
+font-size: 0.82rem;
+letter-spacing: 0.02em;
+border: 1px solid #2e3f6e;
+}
+
+.eval-table thead th:first-child { text-align: center; width: 48px; }
+.eval-table thead th:nth-child(2) { text-align: left; }
+
+.eval-table tbody tr {
+border-bottom: 1px solid #e8e2d6;
+transition: background 0.15s;
+}
+
+.eval-table tbody tr:hover { background: #faf8f4; }
+.eval-table tbody tr:nth-child(even) { background: #fdfcf9; }
+.eval-table tbody tr:nth-child(even):hover { background: #f5f2ec; }
+
+.eval-table td {
+padding: 10px 12px;
+vertical-align: middle;
+border: 1px solid #e8e2d6;
+}
+
+.row-num {
+text-align: center;
+font-weight: 700;
+color: var(–muted);
+background: #f5f3ee;
+}
+
+.criteria-text {
+line-height: 1.5;
+color: var(–text);
+}
+
+/* Radio cells */
+.radio-cell {
+text-align: center;
+vertical-align: middle;
+}
+
+.radio-group {
+display: flex;
+justify-content: center;
+gap: 0;
+}
+
+.radio-option {
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 4px;
+cursor: pointer;
+padding: 4px 10px;
+border-radius: 4px;
+transition: background 0.15s;
+}
+
+.radio-option input[type=“radio”] { display: none; }
+
+.radio-circle {
+width: 22px;
+height: 22px;
+border-radius: 50%;
+border: 2px solid var(–border);
+display: flex;
+align-items: center;
+justify-content: center;
+transition: all 0.2s;
+}
+
+.radio-circle::after {
+content: ‘’;
+width: 10px;
+height: 10px;
+border-radius: 50%;
+background: transparent;
+transition: all 0.2s;
+}
+
+input[type=“radio”]:checked + .radio-circle {
+border-color: var(–navy);
+}
+
+.pass-option input[type=“radio”]:checked + .radio-circle {
+border-color: #2d7a4f;
+background: #2d7a4f;
+}
+.pass-option input[type=“radio”]:checked + .radio-circle::after {
+background: white;
+}
+
+.fail-option input[type=“radio”]:checked + .radio-circle {
+border-color: #c0392b;
+background: #c0392b;
+}
+.fail-option input[type=“radio”]:checked + .radio-circle::after {
+background: white;
+}
+
+.radio-label {
+font-size: 0.72rem;
+color: var(–muted);
+font-weight: 600;
+}
+
+.pass-option .radio-label { color: #2d7a4f; }
+.fail-option .radio-label { color: #c0392b; }
+
+/* Row status highlighting */
+.eval-table tr.row-pass td { background: var(–pass-bg) !important; }
+.eval-table tr.row-fail td { background: var(–fail-bg) !important; }
+
+.remark-input {
+border: none;
+border-bottom: 1px dashed var(–border);
+width: 100%;
+font-family: ‘Sarabun’, sans-serif;
+font-size: 0.85rem;
+color: var(–text);
+background: transparent;
+padding: 2px 4px;
+outline: none;
+}
+.remark-input:focus { border-bottom-color: var(–navy); }
+
+/* Summary */
+.summary-section {
+border: 1.5px solid var(–border);
+border-radius: 6px;
+overflow: hidden;
+margin-bottom: 24px;
+}
+
+.summary-title {
+background: #f5f3ee;
+padding: 8px 16px;
+font-weight: 700;
+font-size: 0.85rem;
+color: var(–navy);
+border-bottom: 1px solid var(–border);
+font-family: ‘Prompt’, sans-serif;
+}
+
+.summary-body {
+padding: 14px 16px;
+display: flex;
+flex-direction: column;
+gap: 10px;
+}
+
+.additional-remark {
+width: 100%;
+border: 1px solid var(–border);
+border-radius: 4px;
+padding: 8px 10px;
+font-family: ‘Sarabun’, sans-serif;
+font-size: 0.88rem;
+color: var(–text);
+resize: vertical;
+min-height: 60px;
+outline: none;
+transition: border-color 0.2s;
+}
+.additional-remark:focus { border-color: var(–navy); }
+
+/* Result radio */
+.result-options {
+display: flex;
+flex-direction: column;
+gap: 8px;
+margin-top: 6px;
+}
+
+.result-option {
+display: flex;
+align-items: center;
+gap: 10px;
+cursor: pointer;
+padding: 10px 14px;
+border-radius: 5px;
+border: 1.5px solid var(–border);
+transition: all 0.2s;
+}
+
+.result-option:hover { border-color: var(–navy); background: #f8f6f2; }
+
+.result-option input[type=“radio”] { display: none; }
+
+.result-check {
+width: 20px;
+height: 20px;
+border-radius: 50%;
+border: 2px solid var(–border);
+display: flex;
+align-items: center;
+justify-content: center;
+flex-shrink: 0;
+transition: all 0.2s;
+}
+
+.result-check::after {
+content: ‘’;
+width: 9px;
+height: 9px;
+border-radius: 50%;
+background: transparent;
+transition: all 0.2s;
+}
+
+.result-option.selected-fail {
+border-color: #c0392b;
+background: #fdf0f0;
+}
+.result-option.selected-fail .result-check {
+border-color: #c0392b;
+background: #c0392b;
+}
+.result-option.selected-fail .result-check::after { background: white; }
+
+.result-option.selected-pass {
+border-color: #2d7a4f;
+background: #e8f4ec;
+}
+.result-option.selected-pass .result-check {
+border-color: #2d7a4f;
+background: #2d7a4f;
+}
+.result-option.selected-pass .result-check::after { background: white; }
+
+.result-text { font-size: 0.9rem; }
+.result-text strong { display: block; font-size: 0.82rem; color: var(–muted); font-weight: 400; }
+
+/* Signature */
+.signature-section {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 30px;
+margin-top: 10px;
+}
+
+.sig-box {
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 8px;
+}
+
+.sig-title {
+font-size: 0.82rem;
+color: var(–muted);
+font-weight: 600;
+font-family: ‘Prompt’, sans-serif;
+}
+
+.sig-name-input {
+border: none;
+border-bottom: 1.5px solid var(–border);
+text-align: center;
+padding: 4px 8px;
+font-family: ‘Sarabun’, sans-serif;
+font-size: 0.92rem;
+color: var(–text);
+background: transparent;
+outline: none;
+width: 100%;
+max-width: 200px;
+}
+
+.sig-name-input:focus { border-color: var(–navy); }
+
+.sig-date {
+font-size: 0.78rem;
+color: var(–muted);
+}
+
+/* Score badge */
+.score-badge {
+position: fixed;
+bottom: 24px;
+right: 24px;
+background: var(–navy);
+color: var(–white);
+padding: 14px 20px;
+border-radius: 12px;
+box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+text-align: center;
+min-width: 120px;
+z-index: 50;
+transition: all 0.3s;
+}
+
+.score-number {
+font-family: ‘Prompt’, sans-serif;
+font-size: 2rem;
+font-weight: 600;
+color: var(–gold);
+line-height: 1;
+}
+
+.score-label {
+font-size: 0.72rem;
+color: #aaa;
+margin-top: 2px;
+}
+
+.score-bar {
+width: 100%;
+height: 4px;
+background: rgba(255,255,255,0.15);
+border-radius: 2px;
+margin-top: 8px;
+overflow: hidden;
+}
+
+.score-fill {
+height: 100%;
+background: var(–gold);
+border-radius: 2px;
+transition: width 0.4s ease;
+}
+
+/* PDF mode */
+@media print {
+.toolbar, .score-badge, .form-instructions, .btn { display: none !important; }
+body { background: white; }
+.page-wrapper { padding: 0; }
+#document { box-shadow: none; border-top: none; }
+}
+
+/* Responsive */
+@media (max-width: 850px) {
+#document { width: 100%; padding: 24px 16px; }
+.info-grid { grid-template-columns: 1fr 1fr; }
 }
 </style>
+
 </head>
 <body>
 
-<div class="container">
-<h2>แบบประเมินพนักงาน</h2>
+<!-- Toolbar -->
 
-<div class="row">
-<input type="text" id="firstName" placeholder="ชื่อ">
-<input type="text" id="lastName" placeholder="นามสกุล">
+<div class="toolbar">
+  <div class="toolbar-title">📋 ระบบประเมินพนักงาน — Service Staff</div>
+  <div class="toolbar-actions">
+    <button class="btn btn-outline" onclick="resetForm()">🔄 ล้างข้อมูล</button>
+    <button class="btn btn-primary" onclick="exportPDF()">📄 บันทึก / แชร์ PDF</button>
+  </div>
 </div>
 
-<div class="row">
-<input type="text" id="empId" placeholder="ID">
-<input type="text" id="station" placeholder="สถานี">
+<div class="page-wrapper">
+  <div class="form-instructions">
+    ℹ️ กรอกข้อมูลให้ครบถ้วน แล้วกด <strong style="color:var(--gold);margin:0 4px;">"บันทึก / แชร์ PDF"</strong> เพื่อสร้างไฟล์และแชร์ผ่าน Line หรือแอพอื่นๆ
+  </div>
+
+  <!-- Document -->
+
+  <div id="document">
+
+```
+<div class="doc-header">
+  <div class="doc-title">แบบประเมินความสามารถในการปฏิบัติงาน</div>
+  <div style="text-align:center;font-size:0.85rem;color:var(--muted);margin-top:-6px;margin-bottom:14px;font-family:'Prompt',sans-serif;font-weight:500;">ตำแหน่ง : Service Staff</div>
 </div>
 
-<table>
-<thead>
-<tr>
-<th rowspan="2">ลำดับ</th>
-<th rowspan="2">หัวข้อการประเมิน</th>
-<th colspan="2">ความสามารถในการปฏิบัติงาน</th>
-<th rowspan="2">เหตุผล / ข้อเสนอแนะ</th>
-</tr>
-<tr>
-<th>ไม่ผ่าน</th>
-<th>ผ่าน</th>
-</tr>
-</thead>
-<tbody id="evaluationTable">
-</tbody>
+<!-- Info fields -->
+<div class="info-grid">
+  <div class="info-field">
+    <span class="info-label">ชื่อ - นามสกุล</span>
+    <input class="info-input" id="empName" type="text" placeholder="กรอกชื่อพนักงาน" oninput="updatePreview()">
+  </div>
+  <div class="info-field">
+    <span class="info-label">รหัสพนักงาน (ID)</span>
+    <input class="info-input" id="empId" type="text" placeholder="T0432b">
+  </div>
+  <div class="info-field">
+    <span class="info-label">สถานี</span>
+    <input class="info-input" id="station" type="text" placeholder="S5">
+  </div>
+</div>
+
+<div class="instruction-box">
+  กรุณาทำเครื่องหมาย <strong>✓</strong> ในช่อง <strong>"ความสามารถในการปฏิบัติงาน"</strong> ที่ตรงกับความคิดเห็นของท่าน และเขียนเหตุผล/ข้อเสนอแนะให้ครบทุกข้อ
+</div>
+
+<!-- Evaluation Table -->
+<table class="eval-table" id="evalTable">
+  <thead>
+    <tr>
+      <th>ลำดับ</th>
+      <th>หัวข้อการประเมิน</th>
+      <th colspan="2" style="text-align:center;">ความสามารถในการปฏิบัติงาน</th>
+      <th>เหตุผล / ข้อเสนอแนะ</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th></th>
+      <th style="background:#c0392b;color:white;width:70px;">ไม่ผ่าน</th>
+      <th style="background:#2d7a4f;color:white;width:70px;">ผ่าน</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="evalBody">
+  </tbody>
 </table>
 
-<div class="actions">
-<button onclick="generatePDF()">Export PDF</button>
-<button onclick="sharePDF()">Share</button>
+<!-- Summary -->
+<div class="summary-section">
+  <div class="summary-title">ข้อเสนอแนะอื่น ๆ</div>
+  <div class="summary-body">
+    <textarea class="additional-remark" id="additionalRemark" placeholder="ระบุข้อเสนอแนะเพิ่มเติม..."></textarea>
+
+    <div style="font-size:0.85rem;font-weight:700;color:var(--navy);margin-top:4px;">ผลการประเมิน</div>
+    <div class="result-options" id="resultOptions">
+      <label class="result-option" id="failOption">
+        <input type="radio" name="result" value="fail" onchange="updateResult('fail')">
+        <div class="result-check"></div>
+        <div class="result-text">
+          ❌ <strong>ไม่ผ่าน</strong>
+          ไม่พร้อมจะเลื่อนตำแหน่ง
+        </div>
+      </label>
+      <label class="result-option" id="passOption">
+        <input type="radio" name="result" value="pass" onchange="updateResult('pass')">
+        <div class="result-check"></div>
+        <div class="result-text">
+          ✅ <strong>ผ่าน</strong>
+          ให้มีสิทธิ์รับการทดสอบเลื่อนตำแหน่งได้
+        </div>
+      </label>
+    </div>
+  </div>
 </div>
 
+<!-- Signature -->
+<div class="signature-section">
+  <div class="sig-box">
+    <div class="sig-title">นายสถานี</div>
+    <input class="sig-name-input" type="text" placeholder="ชื่อนายสถานี">
+    <div class="sig-date" id="sigDate"></div>
+  </div>
+  <div class="sig-box">
+    <div class="sig-title">ผู้บังคับบัญชา</div>
+    <input class="sig-name-input" type="text" placeholder="ชื่อผู้บังคับบัญชา">
+    <div class="sig-date" id="sigDate2"></div>
+  </div>
+</div>
+```
+
+  </div><!-- /document -->
+</div>
+
+<!-- Score Badge -->
+
+<div class="score-badge" id="scoreBadge">
+  <div class="score-label">คะแนน</div>
+  <div class="score-number" id="scoreNumber">0/8</div>
+  <div class="score-bar"><div class="score-fill" id="scoreFill" style="width:0%"></div></div>
+  <div class="score-label" style="margin-top:4px;font-size:0.68rem;" id="scorePercent">0%</div>
 </div>
 
 <script>
-
-const topics = [
-"การเตรียมพร้อมเพื่อเริ่มงาน มาก่อนเวลา พร้อมปฏิบัติงานทันที",
-"การให้บริการ ผู้โดยสาร",
-"การแก้ไขปัญหา เช่น การชี้แจงผู้โดยสารเรื่องห้ามกิน ห้ามดื่ม",
-"การอธิบายข้อมูล (การเดินทาง, อื่นๆ)",
-"การใช้คำพูดและน้ำเสียง",
-"การแต่งกาย บุคลิกภาพ และกิริยามารยาท",
-"มนุษยสัมพันธ์ระหว่างเพื่อนร่วมงานและหัวหน้างาน",
-"การปฏิบัติตามที่หัวหน้าสถานีมอบหมาย"
+const criteria = [
+  "การเตรียมพร้อมเพื่อเริ่มงาน มาก่อนเวลา พร้อมปฏิบัติงานทันที",
+  "การให้บริการ ผู้โดยสาร",
+  "การแก้ไขปัญหาเช่น การชี้แจงให้ผู้โดยสารห้ามกิน ห้ามดื่ม",
+  "การอธิบายข้อมูล (การเดินทาง, อื่น ๆ)",
+  "การใช้คำพูดและน้ำเสียง",
+  "การแต่งกายบุคลิกและกริยามารยาท",
+  "มนุษย์สัมพันธ์ระหว่างเพื่อนร่วมงานและหัวหน้างาน",
+  "การปฏิบัติตามที่หัวหน้าสถานีมอบหมาย"
 ];
 
-const table = document.getElementById("evaluationTable");
+let scores = new Array(8).fill(null); // null, 'pass', 'fail'
 
-topics.forEach((topic, index)=>{
-    table.innerHTML += `
-    <tr>
-        <td class="center">${index+1}</td>
-        <td>${topic}</td>
-        <td class="center"><input type="radio" name="q${index}" value="ไม่ผ่าน"></td>
-        <td class="center"><input type="radio" name="q${index}" value="ผ่าน"></td>
-        <td><textarea rows="2" id="reason${index}"></textarea></td>
-    </tr>
+function buildTable() {
+  const tbody = document.getElementById('evalBody');
+  tbody.innerHTML = '';
+  criteria.forEach((c, i) => {
+    const tr = document.createElement('tr');
+    tr.id = 'row' + i;
+    tr.innerHTML = `
+      <td class="row-num">${i + 1}</td>
+      <td class="criteria-text">${c}</td>
+      <td class="radio-cell">
+        <label class="radio-option fail-option" onclick="setScore(${i}, 'fail')">
+          <input type="radio" name="eval${i}" value="fail">
+          <div class="radio-circle"></div>
+        </label>
+      </td>
+      <td class="radio-cell">
+        <label class="radio-option pass-option" onclick="setScore(${i}, 'pass')">
+          <input type="radio" name="eval${i}" value="pass">
+          <div class="radio-circle"></div>
+        </label>
+      </td>
+      <td><input class="remark-input" type="text" placeholder="ระบุเหตุผล..."></td>
     `;
-});
+    tbody.appendChild(tr);
+  });
+}
 
-async function generatePDF(){
+function setScore(idx, val) {
+  scores[idx] = val;
+  const row = document.getElementById('row' + idx);
+  row.className = '';
+  if (val === 'pass') row.classList.add('row-pass');
+  if (val === 'fail') row.classList.add('row-fail');
+  updateScore();
+}
 
+function updateScore() {
+  const passed = scores.filter(s => s === 'pass').length;
+  const answered = scores.filter(s => s !== null).length;
+  const pct = answered > 0 ? Math.round((passed / 8) * 100) : 0;
+  document.getElementById('scoreNumber').textContent = passed + '/8';
+  document.getElementById('scoreFill').style.width = pct + '%';
+  document.getElementById('scorePercent').textContent = pct + '%';
+}
+
+function updateResult(val) {
+  document.getElementById('failOption').className = 'result-option' + (val === 'fail' ? ' selected-fail' : '');
+  document.getElementById('passOption').className = 'result-option' + (val === 'pass' ? ' selected-pass' : '');
+}
+
+function resetForm() {
+  if (!confirm('ล้างข้อมูลทั้งหมด?')) return;
+  document.querySelectorAll('input[type="text"], textarea').forEach(el => el.value = '');
+  document.querySelectorAll('input[type="radio"]').forEach(el => el.checked = false);
+  scores = new Array(8).fill(null);
+  document.querySelectorAll('#evalBody tr').forEach(tr => tr.className = '');
+  document.getElementById('failOption').className = 'result-option';
+  document.getElementById('passOption').className = 'result-option';
+  document.getElementById('stationDisplay').textContent = 'S5';
+  updateScore();
+}
+
+function updatePreview() {}
+
+async function exportPDF() {
+  const btn = document.querySelector('.btn-primary');
+  btn.textContent = '⏳ กำลังสร้าง PDF...';
+  btn.disabled = true;
+
+  // Hide interactive elements temporarily, show text
+  const inputs = document.querySelectorAll('#document input, #document textarea');
+  const vals = [];
+  inputs.forEach(el => {
+    vals.push({ el, val: el.value });
+    const span = document.createElement('span');
+    span.textContent = el.value || (el.placeholder || '');
+    span.style.cssText = el.style.cssText;
+    span.className = el.className;
+    if (el.tagName === 'TEXTAREA') {
+      span.style.display = 'block';
+      span.style.whiteSpace = 'pre-wrap';
+    }
+    el.parentNode.insertBefore(span, el);
+    el._span = span;
+    el.style.display = 'none';
+  });
+
+  try {
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF("p","mm","a4");
+    const doc = document.getElementById('document');
 
-    doc.setFont("helvetica"); // ใช้ fallback ถ้ายังไม่ได้ฝังฟอนต์
-    doc.setFontSize(16);
-    doc.text("แบบประเมินพนักงาน", 70, 15);
-
-    const firstName = document.getElementById("firstName").value;
-    const lastName = document.getElementById("lastName").value;
-    const empId = document.getElementById("empId").value;
-    const station = document.getElementById("station").value;
-
-    doc.setFontSize(12);
-    doc.text(`ชื่อ: ${firstName} ${lastName}`, 14, 25);
-    doc.text(`ID: ${empId}`, 140, 25);
-    doc.text(`สถานี: ${station}`, 14, 32);
-
-    let rows = [];
-
-    topics.forEach((topic,index)=>{
-        const selected = document.querySelector(`input[name="q${index}"]:checked`);
-        const result = selected ? selected.value : "";
-        const reason = document.getElementById(`reason${index}`).value;
-
-        rows.push([
-            index+1,
-            topic,
-            result==="ไม่ผ่าน" ? "✓" : "",
-            result==="ผ่าน" ? "✓" : "",
-            reason
-        ]);
+    const canvas = await html2canvas(doc, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#ffffff',
+      logging: false
     });
 
-    doc.autoTable({
-        startY:40,
-        head:[[
-            "ลำดับ",
-            "หัวข้อการประเมิน",
-            "ไม่ผ่าน",
-            "ผ่าน",
-            "เหตุผล / ข้อเสนอแนะ"
-        ]],
-        body:rows,
-        styles:{fontSize:10}
+    // Restore inputs
+    inputs.forEach(el => {
+      el.style.display = '';
+      if (el._span) el._span.remove();
     });
 
-    doc.save("evaluation.pdf");
+    const imgData = canvas.toDataURL('image/jpeg', 0.95);
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const pdfW = pdf.internal.pageSize.getWidth();
+    const pdfH = pdf.internal.pageSize.getHeight();
+    const imgW = canvas.width;
+    const imgH = canvas.height;
+    const ratio = pdfW / (imgW / 2 * 0.2646);
+    const scaledH = (imgH / 2 * 0.2646) * ratio;
+
+    let posY = 0;
+    let remaining = scaledH;
+    let page = 0;
+    while (remaining > 0) {
+      if (page > 0) pdf.addPage();
+      const srcY = page * (pdfH / ratio / 0.2646) * 2;
+      pdf.addImage(imgData, 'JPEG', 0, -posY, pdfW, scaledH);
+      posY += pdfH;
+      remaining -= pdfH;
+      page++;
+    }
+
+    const empName = document.getElementById('empName').value || 'พนักงาน';
+    const empId = document.getElementById('empId').value || 'ID';
+    const filename = `ประเมิน_${empName}_${empId}.pdf`;
+
+    // Try share API first (mobile)
+    const blob = pdf.output('blob');
+    const file = new File([blob], filename, { type: 'application/pdf' });
+
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        title: 'แบบประเมินพนักงาน',
+        text: `ประเมินพนักงาน: ${empName}`,
+        files: [file]
+      });
+    } else {
+      // Desktop: download
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+      alert('💾 ดาวน์โหลด PDF แล้ว!\n\nบนมือถือ: เปิดไฟล์ PDF แล้วกด "แชร์" เพื่อส่งผ่าน Line หรือแอพอื่น');
+    }
+
+  } catch (e) {
+    // Restore inputs if error
+    inputs.forEach(el => {
+      el.style.display = '';
+      if (el._span) el._span.remove();
+    });
+    alert('เกิดข้อผิดพลาด: ' + e.message);
+  }
+
+  btn.textContent = '📄 บันทึก / แชร์ PDF';
+  btn.disabled = false;
 }
 
-async function sharePDF(){
-    await generatePDF();
-    alert("ไฟล์ถูกดาวน์โหลดแล้ว สามารถแชร์ผ่าน LINE ได้จากเมนูแชร์ของมือถือ");
-}
+// Init
+buildTable();
+updateScore();
 
+// Set today's date
+const today = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+document.getElementById('sigDate').textContent = today;
+document.getElementById('sigDate2').textContent = today;
 </script>
 
 </body>
