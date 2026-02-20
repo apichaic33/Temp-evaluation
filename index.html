@@ -34,13 +34,13 @@ color: var(–text);
 .toolbar {
 position: fixed;
 top: 0; left: 0; right: 0;
-background: var(–navy);
+background: #1a2744 !important;
 padding: 12px 24px;
 display: flex;
 align-items: center;
 justify-content: space-between;
-z-index: 100;
-box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+z-index: 1000;
+box-shadow: 0 3px 16px rgba(0,0,0,0.6);
 }
 
 .toolbar-title {
@@ -203,43 +203,45 @@ font-size: 0.88rem;
 }
 
 .eval-table thead tr {
-background: var(–navy);
-color: var(–white);
+background: #1a2744;
+color: #ffffff;
 }
 
 .eval-table thead th {
 padding: 10px 12px;
 text-align: center;
 font-family: ‘Prompt’, sans-serif;
-font-weight: 500;
+font-weight: 600;
 font-size: 0.82rem;
 letter-spacing: 0.02em;
-border: 1px solid #2e3f6e;
+border: 1px solid #0d1a35;
+color: #ffffff;
 }
 
 .eval-table thead th:first-child { text-align: center; width: 48px; }
 .eval-table thead th:nth-child(2) { text-align: left; }
 
 .eval-table tbody tr {
-border-bottom: 1px solid #e8e2d6;
+border-bottom: 1px solid #d5cfc3;
 transition: background 0.15s;
 }
 
-.eval-table tbody tr:hover { background: #faf8f4; }
-.eval-table tbody tr:nth-child(even) { background: #fdfcf9; }
-.eval-table tbody tr:nth-child(even):hover { background: #f5f2ec; }
+.eval-table tbody tr:hover { background: #f0ece3; }
+.eval-table tbody tr:nth-child(odd) { background: #ffffff; }
+.eval-table tbody tr:nth-child(even) { background: #f7f5f0; }
+.eval-table tbody tr:nth-child(even):hover { background: #ede9e0; }
 
 .eval-table td {
 padding: 10px 12px;
 vertical-align: middle;
-border: 1px solid #e8e2d6;
+border: 1px solid #ccc5b5;
 }
 
 .row-num {
 text-align: center;
 font-weight: 700;
-color: var(–muted);
-background: #f5f3ee;
+color: #ffffff;
+background: #2a3d6b;
 }
 
 .criteria-text {
@@ -297,16 +299,16 @@ border-color: var(–navy);
 }
 
 .pass-option input[type=“radio”]:checked + .radio-circle {
-border-color: #2d7a4f;
-background: #2d7a4f;
+border-color: #1f6b3a;
+background: #1f6b3a;
 }
 .pass-option input[type=“radio”]:checked + .radio-circle::after {
 background: white;
 }
 
 .fail-option input[type=“radio”]:checked + .radio-circle {
-border-color: #c0392b;
-background: #c0392b;
+border-color: #b03025;
+background: #b03025;
 }
 .fail-option input[type=“radio”]:checked + .radio-circle::after {
 background: white;
@@ -318,12 +320,12 @@ color: var(–muted);
 font-weight: 600;
 }
 
-.pass-option .radio-label { color: #2d7a4f; }
-.fail-option .radio-label { color: #c0392b; }
+.pass-option .radio-label { color: #1f6b3a; }
+.fail-option .radio-label { color: #b03025; }
 
 /* Row status highlighting */
-.eval-table tr.row-pass td { background: var(–pass-bg) !important; }
-.eval-table tr.row-fail td { background: var(–fail-bg) !important; }
+.eval-table tr.row-pass td { background: #d4edda !important; }
+.eval-table tr.row-fail td { background: #f8d7da !important; }
 
 .remark-input {
 border: none;
@@ -609,8 +611,8 @@ body { background: white; }
     <tr>
       <th></th>
       <th></th>
-      <th style="background:#c0392b;color:white;width:70px;">ไม่ผ่าน</th>
-      <th style="background:#2d7a4f;color:white;width:70px;">ผ่าน</th>
+      <th style="background:#b03025;color:white;width:70px;font-weight:700;border:1px solid #8a1f18;">ไม่ผ่าน</th>
+      <th style="background:#1f6b3a;color:white;width:70px;font-weight:700;border:1px solid #144d28;">ผ่าน</th>
       <th></th>
     </tr>
   </thead>
