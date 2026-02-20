@@ -311,37 +311,27 @@ font-family: ‘Prompt’, sans-serif;
 .result-option {
 display: flex;
 align-items: center;
-gap: 10px;
+gap: 12px;
 cursor: pointer;
-padding: 9px 13px;
+padding: 11px 14px;
 border-radius: 5px;
 border: 1.5px solid #c5b99a;
 transition: all 0.2s;
 background: white;
 }
 .result-option:hover { border-color: #1a2744; background: #f8f6f2; }
-.result-option input[type=“radio”] { display: none; }
-.result-check {
+/* native radio — ซ่อน hidden class เดิม */
+.result-option input[type=“radio”] {
 width: 20px; height: 20px;
-border-radius: 50%;
-border: 2px solid #b0a898;
 flex-shrink: 0;
-display: flex; align-items: center; justify-content: center;
-transition: all 0.2s;
-}
-.result-check::after {
-content: ‘’;
-width: 9px; height: 9px;
-border-radius: 50%;
-background: transparent;
-transition: all 0.2s;
+cursor: pointer;
+margin: 0;
+accent-color: #1a2744;
 }
 .result-option.selected-fail { border-color: #b03025; background: #fdf0f0; }
-.result-option.selected-fail .result-check { border-color: #b03025; background: #b03025; }
-.result-option.selected-fail .result-check::after { background: white; }
+.result-option.selected-fail input[type=“radio”] { accent-color: #b03025; }
 .result-option.selected-pass { border-color: #1f6b3a; background: #e8f4ec; }
-.result-option.selected-pass .result-check { border-color: #1f6b3a; background: #1f6b3a; }
-.result-option.selected-pass .result-check::after { background: white; }
+.result-option.selected-pass input[type=“radio”] { accent-color: #1f6b3a; }
 .result-text { font-size: 0.87rem; line-height: 1.4; }
 .result-text strong { font-family: ‘Prompt’, sans-serif; }
 
@@ -413,9 +403,44 @@ transition: width 0.4s ease;
 }
 
 @media (max-width: 600px) {
-#document { padding: 22px 14px; }
-.info-grid { grid-template-columns: 1fr 1fr; }
-.eval-table { font-size: 0.76rem; }
+.page-wrapper { padding: 64px 10px 48px; gap: 10px; }
+#document { padding: 18px 12px; border-top-width: 4px; }
+.doc-title { font-size: 1rem; }
+.info-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+.info-input { font-size: 0.88rem; }
+.instruction-box { font-size: 0.78rem; }
+
+```
+/* table — ลด column ให้พอดีมือถือ */
+.eval-table { font-size: 0.74rem; }
+.eval-table thead tr:first-child th,
+.eval-table thead tr:last-child th { padding: 7px 4px; font-size: 0.72rem; }
+.eval-table td { padding: 7px 5px; }
+.eval-table td.row-num { width: 28px; font-size: 0.72rem; }
+.eval-table thead tr:last-child th.th-fail,
+.eval-table thead tr:last-child th.th-pass { width: 48px; }
+.remark-input { font-size: 0.72rem; }
+
+/* result */
+.result-option { padding: 10px 12px; gap: 10px; }
+.result-text { font-size: 0.82rem; }
+
+/* toolbar */
+.toolbar-title { font-size: 0.78rem; }
+.btn { padding: 6px 10px; font-size: 0.75rem; }
+
+/* score badge */
+.score-badge { bottom: 14px; right: 10px; padding: 10px 12px; min-width: 88px; }
+.score-number { font-size: 1.6rem; }
+```
+
+}
+
+@media (max-width: 380px) {
+.info-grid { grid-template-columns: 1fr; }
+.eval-table { font-size: 0.7rem; }
+.eval-table thead tr:last-child th.th-fail,
+.eval-table thead tr:last-child th.th-pass { width: 40px; font-size: 0.68rem; }
 }
 </style>
 
@@ -485,12 +510,10 @@ transition: width 0.4s ease;
     <div class="result-options">
       <label class="result-option" id="failOption">
         <input type="radio" name="result" value="fail" onchange="updateResult('fail')">
-        <div class="result-check"></div>
         <div class="result-text"><strong>❌ ไม่ผ่าน</strong> — ไม่พร้อมจะเลื่อนตำแหน่ง</div>
       </label>
       <label class="result-option" id="passOption">
         <input type="radio" name="result" value="pass" onchange="updateResult('pass')">
-        <div class="result-check"></div>
         <div class="result-text"><strong>✅ ผ่าน</strong> — ให้มีสิทธิ์รับการทดสอบเลื่อนตำแหน่งได้</div>
       </label>
     </div>
