@@ -566,10 +566,10 @@ transition: opacity 0.2s;
 <body>
 
 <div class="toolbar">
-  <span class="toolbar-title">ระบบประเมินพนักงาน — Service Staff</span>
+  <span class="toolbar-title">📋 ระบบประเมินพนักงาน</span>
   <div class="toolbar-actions">
-    <button class="btn btn-outline" onclick="resetForm()">ล้างข้อมูล</button>
-    <button class="btn btn-primary" id="pdfBtn" onclick="exportPDF()">บันทึก / แชร์ PDF</button>
+    <button class="btn btn-outline" onclick="resetForm()">🔄 ล้างข้อมูล</button>
+    <button class="btn btn-primary" id="pdfBtn" onclick="exportPDF()">📄 บันทึก / แชร์ PDF</button>
   </div>
 </div>
 
@@ -660,7 +660,7 @@ transition: opacity 0.2s;
     <div class="modal-char" id="modalChar">0 / 500 ตัวอักษร</div>
     <div class="modal-actions">
       <button class="modal-btn modal-btn-cancel" onclick="closeModal()">ยกเลิก</button>
-      <button class="modal-btn modal-btn-save"   onclick="saveRemark()">บันทึก</button>
+      <button class="modal-btn modal-btn-save"   onclick="saveRemark()">💾 บันทึก</button>
     </div>
   </div>
 </div>
@@ -865,7 +865,7 @@ async function exportPDF() {
     console.error(e);
   }
 
-  btn.textContent = 'บันทึก / แชร์ PDF';
+  btn.textContent = '📄 บันทึก / แชร์ PDF';
   btn.disabled = false;
 }
 
@@ -880,23 +880,17 @@ function buildPrintNode() {
   // ผลการประเมิน — แสดงเฉพาะที่เลือก
   let resultHTML = '';
   if (selectedResult === 'fail') {
-    resultHTML = `<div style="display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border:1.5px solid #b03025;border-radius:5px;background:#fdf0f0;font-size:12px;font-family:'Sarabun',sans-serif;">
-      <span style="width:16px;height:16px;border-radius:50%;background:#b03025;border:2px solid #b03025;display:inline-flex;align-items:center;justify-content:center;">
-        <span style="width:8px;height:8px;border-radius:50%;background:white;display:block;"></span>
-      </span>
-      <strong style="color:#b03025;font-family:'Prompt',sans-serif;">❌ ไม่ผ่าน</strong>
-      <span style="color:#4a4a4a;">— ไม่พร้อมจะเลื่อนตำแหน่ง</span>
+    resultHTML = `<div style="display:block;padding:8px 14px;border:2px solid #b03025;border-radius:5px;background:#fdf0f0;font-size:12px;font-family:'Sarabun',sans-serif;color:#b03025;">
+      <strong style="font-family:'Prompt',sans-serif;font-size:13px;">❌ ไม่ผ่าน</strong>
+      <span style="color:#4a4a4a;"> — ไม่พร้อมจะเลื่อนตำแหน่ง</span>
     </div>`;
   } else if (selectedResult === 'pass') {
-    resultHTML = `<div style="display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border:1.5px solid #1f6b3a;border-radius:5px;background:#e8f4ec;font-size:12px;font-family:'Sarabun',sans-serif;">
-      <span style="width:16px;height:16px;border-radius:50%;background:#1f6b3a;border:2px solid #1f6b3a;display:inline-flex;align-items:center;justify-content:center;">
-        <span style="width:8px;height:8px;border-radius:50%;background:white;display:block;"></span>
-      </span>
-      <strong style="color:#1f6b3a;font-family:'Prompt',sans-serif;">✅ ผ่าน</strong>
-      <span style="color:#4a4a4a;">— ให้มีสิทธิ์รับการทดสอบเลื่อนตำแหน่งได้</span>
+    resultHTML = `<div style="display:block;padding:8px 14px;border:2px solid #1f6b3a;border-radius:5px;background:#e8f4ec;font-size:12px;font-family:'Sarabun',sans-serif;color:#1f6b3a;">
+      <strong style="font-family:'Prompt',sans-serif;font-size:13px;">✅ ผ่าน</strong>
+      <span style="color:#4a4a4a;"> — ให้มีสิทธิ์รับการทดสอบเลื่อนตำแหน่งได้</span>
     </div>`;
   } else {
-    resultHTML = `<div style="padding:7px 14px;border:1.5px solid #ccc;border-radius:5px;font-size:12px;color:#999;font-family:'Sarabun',sans-serif;">ยังไม่ได้เลือกผลการประเมิน</div>`;
+    resultHTML = `<div style="display:block;padding:8px 14px;border:1.5px solid #ccc;border-radius:5px;font-size:12px;color:#999;font-family:'Sarabun',sans-serif;">ยังไม่ได้เลือกผลการประเมิน</div>`;
   }
 
   // แถวตาราง — ใช้ ✓ แทน radio
@@ -927,7 +921,6 @@ function buildPrintNode() {
     padding:32px 40px;
     font-family:'Sarabun',sans-serif;
     color:#2c2c2c;
-    border-top:5px solid #1a2744;
   `;
 
   wrap.innerHTML = `
