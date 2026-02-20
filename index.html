@@ -3,8 +3,8 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>แบบประเมินพนักงาน - Service Staff</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>แบบประเมินพนักงาน</title>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -566,10 +566,10 @@ transition: opacity 0.2s;
 <body>
 
 <div class="toolbar">
-  <span class="toolbar-title">📋 ระบบประเมินพนักงาน</span>
+  <span class="toolbar-title">ระบบประเมินพนักงาน</span>
   <div class="toolbar-actions">
-    <button class="btn btn-outline" onclick="resetForm()">🔄 ล้างข้อมูล</button>
-    <button class="btn btn-primary" id="pdfBtn" onclick="exportPDF()">📄 บันทึก / แชร์ PDF</button>
+    <button class="btn btn-outline" onclick="resetForm()">ล้างข้อมูล</button>
+    <button class="btn btn-primary" id="pdfBtn" onclick="exportPDF()">แชร์ PDF</button>
   </div>
 </div>
 
@@ -660,7 +660,7 @@ transition: opacity 0.2s;
     <div class="modal-char" id="modalChar">0 / 500 ตัวอักษร</div>
     <div class="modal-actions">
       <button class="modal-btn modal-btn-cancel" onclick="closeModal()">ยกเลิก</button>
-      <button class="modal-btn modal-btn-save"   onclick="saveRemark()">💾 บันทึก</button>
+      <button class="modal-btn modal-btn-save"   onclick="saveRemark()">บันทึก</button>
     </div>
   </div>
 </div>
@@ -806,7 +806,7 @@ function resetForm() {
    =================================================== */
 async function exportPDF() {
   const btn = document.getElementById('pdfBtn');
-  btn.textContent = '⏳ กำลังสร้าง...';
+  btn.textContent = 'กำลังสร้าง...';
   btn.disabled = true;
 
   try {
