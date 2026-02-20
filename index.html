@@ -3,23 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <title>แบบประเมินพนักงาน</title>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
 <style>
 body{
     font-family: sans-serif;
-    background:#f5f5f5;
+    background:#f4f4f4;
     padding:40px;
 }
 .container{
     background:white;
     padding:30px;
-    max-width:900px;
+    max-width:1100px;
     margin:auto;
-    box-shadow:0 0 10px rgba(0,0,0,0.1);
+    box-shadow:0 0 15px rgba(0,0,0,0.1);
 }
 h2{margin-bottom:20px;}
-.row{display:flex; gap:20px; margin-bottom:15px;}
-.row input{padding:8px; flex:1;}
+.row{
+    display:flex;
+    gap:20px;
+    margin-bottom:15px;
+}
+.row input{
+    padding:10px;
+    flex:1;
+    font-size:14px;   /* ✅ ปรับขนาดฟอนต์ */
+}
 table{
     width:100%;
     border-collapse:collapse;
@@ -30,13 +41,17 @@ table, th, td{
 }
 th, td{
     padding:8px;
-    text-align:left;
     font-size:14px;
 }
 th{
     background:#eee;
+    text-align:center;
 }
 .center{text-align:center;}
+textarea{
+    width:100%;
+    font-size:14px;
+}
 button{
     margin-top:20px;
     padding:10px 20px;
@@ -46,6 +61,10 @@ button{
     cursor:pointer;
 }
 button:hover{opacity:0.8;}
+.actions{
+    display:flex;
+    gap:10px;
+}
 </style>
 </head>
 <body>
@@ -66,29 +85,37 @@ button:hover{opacity:0.8;}
 <table>
 <thead>
 <tr>
-<th>ลำดับ</th>
-<th>หัวข้อการประเมิน</th>
-<th class="center">ไม่ผ่าน</th>
-<th class="center">ผ่าน</th>
+<th rowspan="2">ลำดับ</th>
+<th rowspan="2">หัวข้อการประเมิน</th>
+<th colspan="2">ความสามารถในการปฏิบัติงาน</th>
+<th rowspan="2">เหตุผล / ข้อเสนอแนะ</th>
+</tr>
+<tr>
+<th>ไม่ผ่าน</th>
+<th>ผ่าน</th>
 </tr>
 </thead>
 <tbody id="evaluationTable">
 </tbody>
 </table>
 
+<div class="actions">
 <button onclick="generatePDF()">Export PDF</button>
+<button onclick="sharePDF()">Share</button>
+</div>
 
 </div>
 
 <script>
+
 const topics = [
-"การเตรียมพร้อมเพื่อเริ่มงาน มาก่อนเวลา",
-"การให้บริการผู้โดยสาร",
-"การแก้ไขปัญหา เช่น การชี้แจงผู้โดยสาร",
-"การอธิบายข้อมูล (การเดินทางอื่นๆ)",
+"การเตรียมพร้อมเพื่อเริ่มงาน มาก่อนเวลา พร้อมปฏิบัติงานทันที",
+"การให้บริการ ผู้โดยสาร",
+"การแก้ไขปัญหา เช่น การชี้แจงผู้โดยสารเรื่องห้ามกิน ห้ามดื่ม",
+"การอธิบายข้อมูล (การเดินทาง, อื่นๆ)",
 "การใช้คำพูดและน้ำเสียง",
-"การแต่งกาย บุคลิก และกริยามารยาท",
-"มนุษย์สัมพันธ์ระหว่างเพื่อนร่วมงาน",
+"การแต่งกาย บุคลิกภาพ และกิริยามารยาท",
+"มนุษยสัมพันธ์ระหว่างเพื่อนร่วมงานและหัวหน้างาน",
 "การปฏิบัติตามที่หัวหน้าสถานีมอบหมาย"
 ];
 
@@ -97,45 +124,71 @@ const table = document.getElementById("evaluationTable");
 topics.forEach((topic, index)=>{
     table.innerHTML += `
     <tr>
-        <td>${index+1}</td>
+        <td class="center">${index+1}</td>
         <td>${topic}</td>
         <td class="center"><input type="radio" name="q${index}" value="ไม่ผ่าน"></td>
         <td class="center"><input type="radio" name="q${index}" value="ผ่าน"></td>
+        <td><textarea rows="2" id="reason${index}"></textarea></td>
     </tr>
     `;
 });
 
 async function generatePDF(){
+
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+    const doc = new jsPDF("p","mm","a4");
+
+    doc.setFont("helvetica"); // ใช้ fallback ถ้ายังไม่ได้ฝังฟอนต์
+    doc.setFontSize(16);
+    doc.text("แบบประเมินพนักงาน", 70, 15);
 
     const firstName = document.getElementById("firstName").value;
     const lastName = document.getElementById("lastName").value;
     const empId = document.getElementById("empId").value;
     const station = document.getElementById("station").value;
 
-    doc.setFont("helvetica");
-    doc.setFontSize(14);
-    doc.text("แบบประเมินพนักงาน", 80, 15);
-
     doc.setFontSize(12);
-    doc.text(`ชื่อ: ${firstName} ${lastName}`, 20, 30);
-    doc.text(`ID: ${empId}`, 120, 30);
-    doc.text(`สถานี: ${station}`, 20, 40);
+    doc.text(`ชื่อ: ${firstName} ${lastName}`, 14, 25);
+    doc.text(`ID: ${empId}`, 140, 25);
+    doc.text(`สถานี: ${station}`, 14, 32);
 
-    let y = 55;
+    let rows = [];
 
-    topics.forEach((topic, index)=>{
+    topics.forEach((topic,index)=>{
         const selected = document.querySelector(`input[name="q${index}"]:checked`);
-        const result = selected ? selected.value : "-";
+        const result = selected ? selected.value : "";
+        const reason = document.getElementById(`reason${index}`).value;
 
-        doc.text(`${index+1}. ${topic}`, 20, y);
-        doc.text(`ผลประเมิน: ${result}`, 160, y);
-        y += 10;
+        rows.push([
+            index+1,
+            topic,
+            result==="ไม่ผ่าน" ? "✓" : "",
+            result==="ผ่าน" ? "✓" : "",
+            reason
+        ]);
+    });
+
+    doc.autoTable({
+        startY:40,
+        head:[[
+            "ลำดับ",
+            "หัวข้อการประเมิน",
+            "ไม่ผ่าน",
+            "ผ่าน",
+            "เหตุผล / ข้อเสนอแนะ"
+        ]],
+        body:rows,
+        styles:{fontSize:10}
     });
 
     doc.save("evaluation.pdf");
 }
+
+async function sharePDF(){
+    await generatePDF();
+    alert("ไฟล์ถูกดาวน์โหลดแล้ว สามารถแชร์ผ่าน LINE ได้จากเมนูแชร์ของมือถือ");
+}
+
 </script>
 
 </body>
